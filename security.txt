@@ -1,0 +1,88 @@
+1. 기술적 정의 (중급 개발자용)
+Spring Security는 스프링 기반 애플리케이션의 **인증(Authentication)**과 **인가(Authorization)**를 담당하는
+사실상의 표준 보안 프레임워크입니다.
+서블릿 컨테이너 앞단에서 동작하는 'Filter Chain(필터 체인)' 구조를 기반으로 요청을 가로채어 보안 검사를 수행합니다.
+DispatcherServlet에 요청이 도달하기 전에 DelegatingFilterProxy와 FilterChainProxy를 통해 보안 로직을 처리하며,
+인증된 사용자 정보는 스레드 로컬(ThreadLocal) 기반의 SecurityContext에 저장되어 애플리케이션 전역에서 안전하게 공유됩니다.
+
+2. 쉬운 비유 설명: "철통 보안 회사의 출입 시스템"
+Spring Security는 **'최첨단 보안 시스템이 작동하는 회사 빌딩'**과 똑같습니다.
+
+1) Filter Chain (보안 검색대)
+상황: 건물(서버)에 들어가려면 로비에 있는 **여러 개의 보안 검색대(Filter)**를 통과해야 합니다.
+역할: 금속 탐지기(해킹 방지), 신분증 검사기(로그인 체크), 방문 목적 확인(권한 체크) 등 여러 단계의 검문소가 줄지어 서 있습니다.
+이 줄을 모두 통과해야만 엘리베이터(Controller)를 탈 수 있습니다.
+
+2) Authentication (인증 - "누구세요?")
+상황: 검색대에서 경비원이 묻습니다. "당신 직원 맞습니까? 사원증(ID/PW) 보여주세요."
+역할: 사용자가 '내가 누구인지' 증명하는 과정입니다. 신원이 확인되면 경비원은 당신에게
+**'출입증(SecurityContext의 인증 토큰)'**을 목에 걸어줍니다.
+이제 건물 안 어디를 가든 당신이 누구인지 시스템이 압니다.
+
+3) Authorization (인가 - "권한이 있나요?")
+상황: 당신이 '서버실(관리자 페이지)'에 들어가려고 합니다. 경비원이 당신의 출입증 색깔을 봅니다.
+"어? 당신은 파란색(일반 사원)이네요? 여기는 빨간색(관리자)만 들어갈 수 있습니다. 나가세요!"
+역할: 인증된 사용자가 '특정 장소에 갈 자격이 있는지' 확인하는 과정입니다.
+
+핵심 요약
+Spring Security는 **'필터 체인(Filter Chain)'**이라는 여러 개의 검문소를 통해 요청을 걸러내는 보안 프레임워크입니다.
+**인증(Authentication)**은 "신분증 검사(로그인)"이고, **인가(Authorization)**는 "출입증 레벨 확인(권한)"입니다.
+최신 버전에서는 상속 대신 Bean 등록 방식과 람다 표현식을 사용하여 설정을 구성합니다.
+
+1. Http Request 수신: 사용자가 로그인 정보(ID, PW)와 함께 인증 요청을 보냅니다.
+2. 인증 토큰 생성: AuthenticationFilter가 요청을 가로채어, '인증되지 않은' UsernamePasswordAuthenticationToken 객체를 생성합니다.
+3. Manager로 위임: 토큰을 AuthenticationManager(보통 ProviderManager)에게 전달합니다.
+4. Provider 탐색: ProviderManager는 해당 토큰을 처리할 수 있는 AuthenticationProvider(예: DaoAuthenticationProvider)를 찾습니다.
+5. UserDetailsService 호출: AuthenticationProvider는 UserDetailsService의 loadUserByUsername(String username)을 호출합니다.
+6. UserDetails 조회: UserDetailsService는 DB에서 회원 정보를 조회하여 UserDetails 객체로 변환해 **반환(Return)**합니다.
+7. 비밀번호 검증 (핵심 보완): AuthenticationProvider는 반환받은 UserDetails의 비밀번호와 사용자가 입력한 비밀번호를 PasswordEncoder를 이용해 대조합니다.
+8. 인증 완료/실패: 비밀번호가 일치하면 '인증된(Authenticated)' 토큰을 새로 생성하여 반환하고, 실패하면 AuthenticationException을 던집니다.
+9. Context 저장: 최종적으로 필터는 인증된 토큰을 SecurityContextHolder의 SecurityContext에 저장하여, 이후 전역적으로 참조 가능하게 합니다.
+
+핵심 요약
+UserDetailsService는 비밀번호를 검사하지 않고, 오직 DB에서 사용자 정보를 가져오는 역할만 합니다.
+실제 비밀번호 검증은 정보를 넘겨받은 AuthenticationProvider가 수행합니다.
+인증 전의 토큰과 인증 후의 토큰은 클래스는 같을 수 있어도, 내부의 **'Authenticated' 속성 값(true/false)**이 다릅니다.
+
+
+spring security
+- 인증(Authentication), 인가(Authorize) 자격 부여 및 보호 기능을 제공하는 프레임 워크
+- 인증 : 사용자가 본인이 맞는지 확인하는 절차
+- 인가 : 인증된 사용자가 요청된 자원에 접근 가능한지 확인하는 절차
+
+필터
+- SecurityFilterChain
+    - SecurityContextPersistenceFilter
+    - UsernamePasswordAuthenticationFilter
+    - AuthorizationFilter
+    - ......
+
+1. Http Request 수신
+=> 사용자가 로그인 정보와 함께 인증 요청을 한다.
+
+2. 유저 자격을 기반으로 인증 토큰을 생성
+=> AuthenticationFilter가 요청을 가로채고, 가로챈 정보를 통해
+UsernamePasswordAuthenticationToken의 인증용 객체를 생성
+
+3. Filter를 통해 AuthenticationToken을 AuthenticationManager로 위임
+=> AuthenticationManager의 구현체인 ProviderManager에게
+생성한 UsernamePasswordAuthenticationToken 객체를 전달한다.
+
+4. AuthenticationProvider의 목록으로 인증을 시도.
+=> AuthenticationManager는 등록된 AuthenticationProvider 들을 조회하면서 인증을 요구한다.
+
+5. UserDetailsService
+=> 실제 데이터베이스에서 사용자 인증 정보를 가져오는 UserDetailsService에 사용자 정보를 전달.
+
+6. UserDetails를 이용해 User객체에 대한 정보를 탐색
+=> 전달받은 사용자 정보를 통해 데이터베이스에서 찾아낸 사용자 정보인 UserDetails 객체를 만든다.
+
+7. User 객체의 정보들을 UserDetails가 UserDetailsService로 전달
+=> AuthenticationProvider들은 UserDetails를 넘겨받고 사용자 정보를 비교
+
+8. 인증 객체 또는 AuthenticationException 발생
+
+9. SecurityContext에 인증 객체를 설정
+=> 최종적으로는 SecurityContextHolder는 세션 영역에 있는 SecurityContextAuthentication 객체를 저장
+
+
