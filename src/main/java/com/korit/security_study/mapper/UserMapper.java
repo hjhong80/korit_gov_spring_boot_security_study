@@ -13,6 +13,6 @@ public interface UserMapper {
     Optional<User> findById(Integer userId);
     List<User> findAll();
     int addUser(User user);
-    int editUser(User user);
+    int updatePassword(User user);
     int removeUser(Integer userId);
 }

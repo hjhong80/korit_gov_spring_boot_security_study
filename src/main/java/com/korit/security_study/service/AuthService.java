@@ -8,6 +8,7 @@ import com.korit.security_study.entity.UserRole;
 import com.korit.security_study.repository.UserRepository;
 import com.korit.security_study.repository.UserRoleRepository;
 import com.korit.security_study.security.jwt.JwtUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final JwtUtils jwtUtils;
 
     public ApiRespDto<?> addUser(SignupReqDto signupReqDto) {
         System.out.println("AuthService : addUser");

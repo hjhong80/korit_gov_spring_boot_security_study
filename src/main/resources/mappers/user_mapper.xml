@@ -107,12 +107,13 @@
         values
             (0, #{username}, #{password}, #{email}, now(), null);
     </insert>
-    <update id="editUser">
+    <update id="updatePassword">
         update
-            user_tb
+            user_tb as ut
         set
-            email = #{email}
+            ut.password = #{password},
+            ut.update_dt = now()
         where
-            user_id = #{userId}
+            ut.user_id = #{userId};
     </update>
 </mapper>
