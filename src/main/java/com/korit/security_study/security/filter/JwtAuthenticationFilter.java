@@ -7,8 +7,8 @@ import com.korit.security_study.security.model.Principal;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,11 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter implements Filter {
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtUtils jwtUtils;
+    private final UserRepository userRepository;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

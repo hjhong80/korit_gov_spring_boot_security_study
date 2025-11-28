@@ -1,6 +1,5 @@
 package com.korit.security_study.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.korit.security_study.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
