@@ -15,4 +15,5 @@ public interface UserMapper {
     int addUser(User user);
     int updatePassword(User user);
     int removeUser(Integer userId);
+    Optional<User> findByEmail(String email);
 }

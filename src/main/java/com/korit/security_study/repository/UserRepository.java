@@ -44,4 +44,9 @@ public class UserRepository {
         System.out.println("UserRepository : editPassword");
         return userMapper.updatePassword(user);
     }
+
+    public Optional<User> findByEmail(String email) {
+        System.out.println("UserRepository : findByEmail");
+        return userMapper.findByEmail(email);
+    }
 }
