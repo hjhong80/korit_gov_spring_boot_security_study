@@ -39,8 +39,14 @@ public class OAuth2PrincipalService extends DefaultOAuth2UserService {
                 email = (String) attributes.get("email");
                 break;
             case "naver" :
-//                break;
-            case "kakao" :
+                Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+                providerUserId = response.get("id").toString();
+                email = (String) response.get("email");
+                break;
+//            case "kakao" :
+//                providerUserId = attributes.get("id").toString();
+//                Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+//                email = (String) kakaoAccount.get("email");
 //                break;
             default :
                 break;
@@ -60,3 +66,34 @@ public class OAuth2PrincipalService extends DefaultOAuth2UserService {
         return new DefaultOAuth2User(authorities, newAttributes,"providerUserId");
     }
 }
+
+/*
+
+spring.security.oauth2.client.registration.naver.redirect-uri=http://localhost:8080/login/oauth2/code/naver
+spring.security.oauth2.client.registration.naver.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.naver.scope=email
+
+spring.security.oauth2.client.registration.naver.client-id=아이디
+spring.security.oauth2.client.registration.naver.client-secret=비밀번호
+spring.security.oauth2.client.registration.naver.client-name=Naver
+spring.security.oauth2.client.registration.naver.provider=naver
+
+spring.security.oauth2.client.provider.naver.authorization-uri=https://nid.naver.com/oauth2.0/authorize
+spring.security.oauth2.client.provider.naver.token-uri=https://nid.naver.com/oauth2.0/token
+spring.security.oauth2.client.provider.naver.user-info-uri=https://openapi.naver.com/v1/nid/me
+spring.security.oauth2.client.provider.naver.user-name-attribute=response
+
+spring.security.oauth2.client.registration.kakao.redirect-uri=http://localhost:8080/login/oauth2/code/kakao
+spring.security.oauth2.client.registration.kakao.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.kakao.scope=email
+spring.security.oauth2.client.registration.kakao.client-secret=비밀번호
+spring.security.oauth2.client.registration.kakao.client-id=아이디
+spring.security.oauth2.client.registration.kakao.client-name=Kakao
+spring.security.oauth2.client.registration.kakao.provider=kakao
+
+spring.security.oauth2.client.provider.kakao.authorization-uri=https://kauth.kakao.com/oauth/authorize
+spring.security.oauth2.client.provider.kakao.token-uri=https://kauth.kakao.com/oauth/token
+spring.security.oauth2.client.provider.kakao.user-info-uri=https://kapi.kakao.com/v2/user/me
+spring.security.oauth2.client.provider.kakao.user-name-attribute=id
+
+*/
