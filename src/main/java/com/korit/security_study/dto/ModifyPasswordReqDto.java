@@ -13,6 +13,7 @@ public class ModifyPasswordReqDto {
     private String newPassword;
 
     public User toEntity(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        System.out.println("ModifyPasswordReqDto : toEntity");
         return User.builder()
                 .userId(userId)
                 .password(bCryptPasswordEncoder.encode(newPassword))

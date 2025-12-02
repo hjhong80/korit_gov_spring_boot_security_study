@@ -15,11 +15,13 @@ public class JwtUtils {
     private final Key KEY;
 
     public JwtUtils(@Value("${jwt.secret}") String secret) {
+        System.out.println("JwtUtils : 생성자");
         KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
 
     public String generateAccessToken(String id) {
+        System.out.println("JwtUtils : generateAccessToken");
         return Jwts.builder()
                 .subject("AccessToken") // 토큰의 용도를 설명하는 식별자
                 .id(id) // 토큰에 고유한 식별자를 부여 (사용자 ID / Email) => 나중에 토큰 무효화나 사용자 조회할때 사용
@@ -27,6 +29,17 @@ public class JwtUtils {
                 .signWith(KEY)
                 .compact();
     }
+
+    public String generateVerifyToken(String id) {
+        System.out.println("JwtUtils : generateVerifyToken");
+        return Jwts.builder()
+                .subject("VerifyToken")
+                .id(id)
+                .expiration(new Date(new Date().getTime()+(1000L * 60L * 5L)))   // 5분
+                .signWith(KEY)
+                .compact();
+    }
+
     /*
 
     Claims : JWT의 Payload 영역, 즉 사용자 정보, 만료일자 등등의 정보가 담겨 있다.

@@ -10,6 +10,7 @@ import com.korit.security_study.service.OAuth2PrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +37,7 @@ public class SecurityConfig {
         System.out.println("SecurityConfig : bCryptPasswordEncoder");
         return new BCryptPasswordEncoder();
     }
+
 
     /*
     CORS -> Cross-Origin Resource Sharing
@@ -87,8 +89,7 @@ public class SecurityConfig {
 
 //        특정 요청 URL에 대한 권한 설정(인가)
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/auth/signup","/auth/signin","/login/oauth2/**", "/oauth2/**").permitAll();
-//            auth.requestMatchers("/auth/signin").permitAll();
+            auth.requestMatchers("/auth/signup","/auth/signin","/login/oauth2/**", "/oauth2/**","/mail/verify").permitAll();
             auth.anyRequest().authenticated();
         });
 

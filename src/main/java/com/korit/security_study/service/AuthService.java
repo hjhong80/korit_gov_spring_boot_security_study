@@ -88,6 +88,7 @@ public class AuthService {
     }
 
     public ApiRespDto<?> signin(SigninReqDto signinReqDto) {
+        System.out.println("AuthService : signin");
         Optional<User> foundUser = userRepository.findByUsername(signinReqDto.getUsername());
         if (foundUser.isEmpty()) {
             return new ApiRespDto<>("failed","사용자 정보를 다시 확인해주세요.",null);
@@ -99,18 +100,4 @@ public class AuthService {
         String token = jwtUtils.generateAccessToken(user.getUserId().toString());
         return new ApiRespDto<>("success","로그인에 성공하였습니다.",token);
     }
-
-//    public ApiRespDto<?> editUser(Dto dto) {
-//        Optional<User> foundUser = userRepository.findById(userId);
-//        if (foundUser.isEmpty()) {
-//            System.out.println("addUser : userId 없음");
-//            return new ApiRespDto<>("failed","userId 조회에 실패하였습니다.",null);
-//        }
-//        return null;
-//    }
-//
-//    public ApiRespDto<?> removeUser(Integer userId) {
-//        return null;
-//    }
-
 }

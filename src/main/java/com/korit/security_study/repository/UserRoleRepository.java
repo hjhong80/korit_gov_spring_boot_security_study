@@ -14,4 +14,9 @@ public class UserRoleRepository {
         System.out.println("UserRoleRepository : addUserRole");
         return userRoleMapper.addUserRole(userRole);
     }
+
+    public int updateUserRole(UserRole userRole) {
+        System.out.println("UserRoleRepository : updateUserRole");
+        return userRoleMapper.updateUserRole(userRole);
+    }
 }

@@ -10,4 +10,5 @@ public interface UserRoleMapper {
     Optional<UserRole> findByUserId(Integer userId);
     Optional<UserRole> findByRoleId(Integer roleId);
     int addUserRole(UserRole userRole);
+    int updateUserRole(UserRole userRole);
 }

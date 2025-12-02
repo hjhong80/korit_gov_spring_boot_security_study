@@ -17,6 +17,7 @@ public class OAuth2SignupReqDto {
     private String providerUserId;
 
     public User toUserEntity (BCryptPasswordEncoder bCryptPasswordEncoder) {
+        System.out.println("OAuth2SignupReqDto : toUserEntity");
         return User.builder()
                 .username(username)
                 .password(bCryptPasswordEncoder.encode(password))
@@ -24,6 +25,7 @@ public class OAuth2SignupReqDto {
                 .build();
     }
     public OAuth2User toOAuth2UserEntity(Integer userId) {
+        System.out.println("OAuth2SignupReqDto : toOAuth2UserEntity");
         return OAuth2User.builder()
                 .userId(userId)
                 .provider(provider)
